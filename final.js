@@ -1,14 +1,8 @@
 const fs = require('fs');
-
-
 var db ='mongodb+srv://Sidhant:1234@senecaweb.gza5hqd.mongodb.net/?retryWrites=true&w=majority';
-
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-
 const bcrypt = require('bcryptjs');
-
-
 var finalUsers = new Schema({
   "email":{
     type: String,
@@ -31,50 +25,37 @@ module.exports.startDB = function(){
           resolve();           
       }
       });
-
   });
-  
 }
 
-
-
-module.exports.registerUser = function(userData){
+module.exports.register = function(userData){
   return new Promise((resolve, reject)=> {
   if(userData.password === "" || userData.email === "" ){
       reject("Error: email or password cannot be empty or only white spaces! ");
-
   }
-
-  bcrypt.genSalt(10, function(err, salt) { // Generate a "salt" using 10 rounds
-      bcrypt.hash(userData.password, salt, function(err, hashValue) { // encrypt the password: "myPassword123"
+  bcrypt.genSalt(10, function(err, salt) { 
+      bcrypt.hash(userData.password, salt, function(err, hashValue) { 
          if(err){
-          reject("There was an error encrypting the password");   
+          reject("ERROR!!!");   
          }else{
           userData.password = hashValue;
-
           let newUser = new  User(userData);
- 
   newUser.save((err) => {
       if(err && err.code == 11000) {
-        reject("user’s email) already taken");
+        reject("users email used");
       } else if(err && err.code != 11000) {
         reject("Error: cannot create the user. "+err);
       }
       else{
-          console.log("Working"); //delete
+          console.log("It is working"); 
           resolve();
       }
-    
-    });
-          
+    });   
          }
       });
       });
-
-
   });
 }
-
 
 module.exports.signIn = function(userData){
   return new Promise((resolve, reject)=> {
@@ -96,13 +77,8 @@ module.exports.signIn = function(userData){
                   reject("Unable to find user: "+userData.email);
                 }
               });
-
-  
        }
-
       })
-      
-
   });
 }
 

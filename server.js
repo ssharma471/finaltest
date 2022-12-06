@@ -1,3 +1,4 @@
+// CYCLIC URL: https://bright-gold-pike.cyclic.app/
 
 var express = require("express");
 var path = require("path");
@@ -5,9 +6,8 @@ const app = express();
 app.use(express.static("public"));
 var final = require('./final.js');
 const port = process.env.PORT || 8080;
-function onhttp(){
-  console.log("Express http server listening on port",port);
-}
+
+
 app.get("/", function(req,res){
   res.sendFile(path.join(__dirname, 'finalViews/home.html'));
 });
@@ -22,23 +22,18 @@ app.get("/signIn", function(req,res){
 
 app.post("/register",(req, res) => {
   final.register(req.body).then(() =>{
-  }).catch(err => res.render({message: "Error: Email or Password cannot complete"}));
+  }).catch(err => res.render({message: "ERROR: Email or Password does not match"}));
 });
 
 app.post("/signIn",(req, res) => {
   final.signIn().then(() =>{
-  }).catch(err => res.render({message: "Error: Email or Password cannot complete"}));
+  }).catch(err => res.render({message: "ERROR: Email or Password does not match"}));
 
 })
-
-
-
-
 
   app.use((req, res) => {
     res.status(404).send("Page Not Found");
   });
-
   final.startDB().then(function () {
     app.listen(port, onhttp);
    })
@@ -46,3 +41,6 @@ app.post("/signIn",(req, res) => {
      console.log('Failed to start!' + err);
    });
   
+   function onhttp(){
+    console.log("Express http server listening on port",port);
+  }
